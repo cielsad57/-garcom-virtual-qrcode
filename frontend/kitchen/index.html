@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel de Controle de Produção da Cozinha - Acompanhe e atualize os pedidos em tempo real.">
+    <title>Restaurante Tech - Painel da Cozinha</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <!-- TOP CONTROL BAR -->
+    <header class="kitchen-header">
+        <div class="header-main-title">
+            <span class="kitchen-emoji">🍳</span>
+            <div>
+                <h1>Painel da Cozinha</h1>
+                <span class="kitchen-subtitle">Controle de Produção em Tempo Real</span>
+            </div>
+        </div>
+        
+        <!-- Connection status indicator -->
+        <div class="connection-status" id="ws-status">
+            <span class="status-indicator offline"></span>
+            <span class="status-text">Conectando...</span>
+        </div>
+    </header>
+
+    <!-- STATS COUNTERS -->
+    <section class="stats-bar" aria-label="Estatísticas de pedidos">
+        <div class="stat-card" id="stat-total-active">
+            <span class="stat-num">0</span>
+            <span class="stat-label">Pedidos Ativos</span>
+        </div>
+        <div class="stat-card" id="stat-pending">
+            <span class="stat-num color-pending">0</span>
+            <span class="stat-label">Pendentes</span>
+        </div>
+        <div class="stat-card" id="stat-preparing">
+            <span class="stat-num color-preparing">0</span>
+            <span class="stat-label">Em Preparo</span>
+        </div>
+        <div class="stat-card" id="stat-ready">
+            <span class="stat-num color-ready">0</span>
+            <span class="stat-label">Prontos</span>
+        </div>
+    </section>
+
+    <!-- KANBAN BOARD -->
+    <main class="kanban-container">
+        <!-- COLUMN 1: PENDING -->
+        <div class="kanban-column" id="col-pendente">
+            <div class="column-header border-pending">
+                <h2><i class="fa-solid fa-receipt"></i> Pendentes (<span class="col-count">0</span>)</h2>
+            </div>
+            <div class="column-cards-list" id="list-pendente">
+                <!-- Cards injected dynamically -->
+            </div>
+        </div>
+
+        <!-- COLUMN 2: PREPARING -->
+        <div class="kanban-column" id="col-preparo">
+            <div class="column-header border-preparing">
+                <h2><i class="fa-solid fa-fire-burner"></i> Em Preparo (<span class="col-count">0</span>)</h2>
+            </div>
+            <div class="column-cards-list" id="list-preparo">
+                <!-- Cards injected dynamically -->
+            </div>
+        </div>
+
+        <!-- COLUMN 3: READY -->
+        <div class="kanban-column" id="col-pronto">
+            <div class="column-header border-ready">
+                <h2><i class="fa-solid fa-bell"></i> Prontos (<span class="col-count">0</span>)</h2>
+            </div>
+            <div class="column-cards-list" id="list-pronto">
+                <!-- Cards injected dynamically -->
+            </div>
+        </div>
+
+        <!-- COLUMN 4: DELIVERED -->
+        <div class="kanban-column" id="col-entregue">
+            <div class="column-header border-delivered">
+                <h2><i class="fa-solid fa-hand-holding-plate"></i> Entregues (<span class="col-count">0</span>)</h2>
+            </div>
+            <div class="column-cards-list" id="list-entregue">
+                <!-- Cards injected dynamically -->
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

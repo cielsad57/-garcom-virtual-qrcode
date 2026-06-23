@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel Administrativo do Restaurante Tech — Gerencie cardápio, mesas e veja estatísticas em tempo real.">
+    <title>Restaurante Tech — Painel Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="sidebar-logo-icon">⚙️</span>
+            <div>
+                <h2>Restaurante</h2>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="dashboard" id="nav-dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-section="cardapio" id="nav-cardapio">
+                <i class="fa-solid fa-utensils"></i>
+                <span>Cardápio</span>
+            </button>
+            <button class="nav-item" data-section="mesas" id="nav-mesas">
+                <i class="fa-solid fa-chair"></i>
+                <span>Mesas</span>
+            </button>
+            <button class="nav-item" data-section="chamados" id="nav-chamados">
+                <i class="fa-solid fa-bell"></i>
+                <span>Chamados</span>
+                <span class="call-badge" id="calls-badge" style="display:none;">0</span>
+            </button>
+        </nav>
+
+        <a href="/" class="sidebar-back-link">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar ao Hub</span>
+        </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title" id="page-title">Dashboard</h1>
+                <span class="page-subtitle" id="page-subtitle">Visão geral do restaurante hoje</span>
+            </div>
+            <div class="topbar-actions" id="topbar-actions">
+                <!-- dynamic actions inserted per section -->
+            </div>
+        </header>
+
+        <!-- ====== SECTION: DASHBOARD ====== -->
+        <section class="section active" id="section-dashboard">
+            <div class="stats-grid" id="stats-grid">
+                <!-- Populated by JS -->
+                <div class="stat-skeleton"></div>
+                <div class="stat-skeleton"></div>
+                <div class="stat-skeleton"></div>
+                <div class="stat-skeleton"></div>
+                <div class="stat-skeleton"></div>
+                <div class="stat-skeleton"></div>
+            </div>
+
+            <div class="dashboard-bottom">
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3><i class="fa-solid fa-circle-dot color-pending"></i> Operações Ativas</h3>
+                        <button class="btn-outline btn-sm" id="btn-refresh-stats">
+                            <i class="fa-solid fa-rotate-right"></i> Atualizar
+                        </button>
+                    </div>
+                    <div class="quick-actions-row">
+                        <a href="/kitchen/index.html" target="_blank" class="quick-action-card kitchen">
+                            <i class="fa-solid fa-fire-burner"></i>
+                            <span>Ver Cozinha</span>
+                        </a>
+                        <a href="/totem/index.html" target="_blank" class="quick-action-card totem">
+                            <i class="fa-solid fa-desktop"></i>
+                            <span>Ver Totem</span>
+                        </a>
+                        <a href="/docs" target="_blank" class="quick-action-card api">
+                            <i class="fa-solid fa-plug"></i>
+                            <span>API Docs</span>
+                        </a>
+                        <button class="quick-action-card danger" id="btn-limpar-entregues">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Limpar Entregues</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SECTION: CARDÁPIO ====== -->
+        <section class="section" id="section-cardapio">
+            <div class="table-controls">
+                <div class="search-filter-row">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-produtos" placeholder="Buscar produto...">
+                    </div>
+                    <select class="filter-select" id="filter-category">
+                        <option value="">Todas as categorias</option>
+                        <option value="Burgers">🍔 Burgers</option>
+                        <option value="Acompanhamentos">🍟 Acompanhamentos</option>
+                        <option value="Bebidas">🥤 Bebidas</option>
+                        <option value="Sobremesas">🍰 Sobremesas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="data-table" id="produtos-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">ID</th>
+                            <th style="width: 60px;">Emoji</th>
+                            <th>Nome do Produto</th>
+                            <th>Categoria</th>
+                            <th style="width: 120px;">Preço</th>
+                            <th style="width: 110px;">Status</th>
+                            <th style="width: 140px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produtos-tbody">
+                        <!-- populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ====== SECTION: MESAS ====== -->
+        <section class="section" id="section-mesas">
+            <div class="mesas-grid" id="mesas-grid">
+                <!-- populated by JS -->
+            </div>
+        </section>
+
+        <!-- ====== SECTION: CHAMADOS ====== -->
+        <section class="section" id="section-chamados">
+            <div class="chamados-header">
+                <p class="chamados-subtext">Chamadas enviadas pelos clientes nas mesas em tempo real. Responda rapidamente para melhorar a experiência!</p>
+            </div>
+            <div class="chamados-grid" id="chamados-grid">
+                <!-- populated by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ====== MODAL: CREATE / EDIT PRODUCT ====== -->
+    <div class="modal-overlay" id="modal-produto" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-produto-title">Novo Produto</h3>
+                <button class="modal-close" id="btn-close-produto-modal" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form class="modal-form" id="form-produto" autocomplete="off">
+                <input type="hidden" id="form-produto-id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-nome">Nome *</label>
+                        <input type="text" id="form-nome" placeholder="Ex: Classic Smash Burger" required maxlength="100">
+                    </div>
+                    <div class="form-group form-group-small">
+                        <label for="form-emoji">Emoji/Ícone</label>
+                        <input type="text" id="form-emoji" placeholder="🍔" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto do Produto (Computador)</label>
+                    <div class="image-upload-wrapper">
+                        <div class="image-preview-container" id="form-image-preview">
+                            <span class="preview-placeholder"><i class="fa-solid fa-image"></i> Nenhuma foto</span>
+                        </div>
+                        <div class="upload-btn-container">
+                            <label for="form-image-file" class="btn-upload-label">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Escolher Foto...
+                            </label>
+                            <input type="file" id="form-image-file" accept="image/*" style="display: none;">
+                            <button type="button" class="btn-remove-image" id="btn-remove-image" style="display: none;">
+                                <i class="fa-solid fa-trash-can"></i> Remover Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="form-descricao">Descrição</label>
+                    <textarea id="form-descricao" rows="3" placeholder="Descreva os ingredientes e destaques do produto..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-preco">Preço (R$) *</label>
+                        <input type="number" id="form-preco" placeholder="29.90" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-categoria">Categoria *</label>
+                        <select id="form-categoria" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="Burgers">🍔 Burgers</option>
+                            <option value="Acompanhamentos">🍟 Acompanhamentos</option>
+                            <option value="Bebidas">🥤 Bebidas</option>
+                            <option value="Sobremesas">🍰 Sobremesas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-checkbox">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="form-disponivel" checked>
+                        <span class="custom-checkbox"></span>
+                        Produto disponível no cardápio
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline" id="btn-cancel-form">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btn-submit-form">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar Produto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: DELETE CONFIRM ====== -->
+    <div class="modal-overlay" id="modal-confirm-delete" style="display: none;">
+        <div class="modal-box modal-box-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color: #ff4757;"></i> Confirmar Exclusão</h3>
+                <button class="modal-close" id="btn-close-delete-modal" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="delete-confirm-text" id="delete-confirm-text">Tem certeza que deseja remover este produto? Esta ação não pode ser desfeita.</p>
+            <div class="modal-footer">
+                <button class="btn-outline" id="btn-cancel-delete">Cancelar</button>
+                <button class="btn-danger" id="btn-confirm-delete">
+                    <i class="fa-solid fa-trash"></i> Sim, Remover
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="admin-toast"></div>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Totem de Autoatendimento do Restaurante Inteligente - Faça seu pedido de forma prática e rápida.">
+    <title>Restaurante Tech - Totem de Autoatendimento</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <!-- STAGE 1: WELCOME SCREEN (TOUCH TO START) -->
+    <div class="kiosk-stage" id="stage-welcome">
+        <div class="welcome-container">
+            <div class="logo-large">
+                <span class="logo-large-emoji">🍔</span>
+                <h1>Restaurante Tech</h1>
+                <p>O Futuro do Atendimento</p>
+            </div>
+            
+            <button class="start-btn" id="btn-start-kiosk">
+                <span class="pulse-circle"></span>
+                <i class="fa-solid fa-hand-pointer"></i> Toque para Iniciar
+            </button>
+            
+            <div class="kiosk-footer-welcome">
+                <p>Aceitamos cartões de Crédito, Débito e Refeição</p>
+                <div class="card-icons-row">
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-solid fa-credit-card"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 2: SERVICE OPTION SCREEN -->
+    <div class="kiosk-stage" id="stage-service-option" style="display: none;">
+        <div class="stage-header">
+            <button class="kiosk-back-btn" id="btn-back-to-welcome">
+                <i class="fa-solid fa-chevron-left"></i> Voltar
+            </button>
+            <h2>Como deseja comer?</h2>
+        </div>
+        
+        <div class="options-container">
+            <button class="option-card" id="btn-option-dinein">
+                <span class="option-icon">🍽️</span>
+                <h3>Para Comer Aqui</h3>
+                <p>Selecione uma mesa disponível e receba seu prato nela.</p>
+            </button>
+            
+            <button class="option-card" id="btn-option-takeaway">
+                <span class="option-icon">🛍️</span>
+                <h3>Para Viagem</h3>
+                <p>Retire sua embalagem no balcão da cozinha quando estiver pronto.</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- STAGE 3: TABLE SELECTOR GRID -->
+    <div class="kiosk-stage" id="stage-table-select" style="display: none;">
+        <div class="stage-header">
+            <button class="kiosk-back-btn" id="btn-back-to-options">
+                <i class="fa-solid fa-chevron-left"></i> Voltar
+            </button>
+            <h2>Escolha sua Mesa</h2>
+            <p>Selecione uma das mesas livres exibidas no painel abaixo.</p>
+        </div>
+        
+        <div class="table-grid-container">
+            <div class="tables-grid" id="kiosk-tables-grid">
+                <!-- Tables will load dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 4: MAIN ORDER SCREEN (SPLIT SCREEN LAYOUT) -->
+    <div class="kiosk-stage" id="stage-menu" style="display: none;">
+        <!-- Kiosk Header -->
+        <header class="kiosk-menu-header">
+            <button class="cancel-order-btn" id="btn-cancel-kiosk-order">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </button>
+            <div class="kiosk-header-info">
+                <span class="kiosk-badge-info" id="kiosk-order-type-badge">Para Viagem</span>
+            </div>
+        </header>
+
+        <div class="kiosk-menu-body">
+            <!-- Sidebar Navigation -->
+            <aside class="kiosk-sidebar">
+                <div class="kiosk-categories-list" id="kiosk-categories">
+                    <button class="kiosk-cat-btn active" data-category="Todos">
+                        <span class="kiosk-cat-icon">🍽️</span> Todos
+                    </button>
+                    <button class="kiosk-cat-btn" data-category="Burgers">
+                        <span class="kiosk-cat-icon">🍔</span> Burgers
+                    </button>
+                    <button class="kiosk-cat-btn" data-category="Acompanhamentos">
+                        <span class="kiosk-cat-icon">🍟</span> Porções
+                    </button>
+                    <button class="kiosk-cat-btn" data-category="Bebidas">
+                        <span class="kiosk-cat-icon">🥤</span> Bebidas
+                    </button>
+                    <button class="kiosk-cat-btn" data-category="Sobremesas">
+                        <span class="kiosk-cat-icon">🍰</span> Sobremesas
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Product Grid -->
+            <main class="kiosk-products-area">
+                <div class="kiosk-products-grid" id="kiosk-products-grid">
+                    <!-- Products dynamically loaded -->
+                </div>
+            </main>
+
+            <!-- Persistent Kiosk Cart Side Panel -->
+            <aside class="kiosk-cart-panel">
+                <div class="kiosk-cart-header">
+                    <h3>Seu Pedido</h3>
+                    <button class="clear-cart-btn" id="btn-kiosk-clear-cart">Esvaziar</button>
+                </div>
+                
+                <div class="kiosk-cart-items-wrapper">
+                    <div class="kiosk-cart-items-list" id="kiosk-cart-items">
+                        <!-- Cart items list -->
+                        <div class="empty-cart-message">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <p>Toque nos produtos do cardápio para adicioná-los aqui.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kiosk-cart-footer">
+                    <div class="kiosk-total-row">
+                        <span>Total do Pedido:</span>
+                        <strong id="kiosk-cart-total">R$ 0,00</strong>
+                    </div>
+                    <button class="kiosk-checkout-btn" id="btn-kiosk-checkout" disabled>
+                        Finalizar e Pagar <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- STAGE 5: PAYMENT SIMULATION -->
+    <div class="kiosk-stage" id="stage-payment" style="display: none;">
+        <div class="payment-container">
+            <div class="payment-card-machine">
+                <div class="machine-screen">
+                    <span class="machine-logo">REDEPAY</span>
+                    <div class="machine-message" id="payment-status-message">Insira ou Aproxime o Cartão</div>
+                    <div class="machine-value" id="payment-value-display">R$ 0,00</div>
+                    <div class="machine-dots" id="payment-progress-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <div class="machine-keyboard">
+                    <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+                    <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+                    <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+                    <div class="key btn-cancel">X</div><div class="key">0</div><div class="key btn-confirm">OK</div>
+                </div>
+            </div>
+            
+            <div class="payment-instructions">
+                <h2>Simulador de Pagamento</h2>
+                <p>Nesta demonstração, o pagamento é processado automaticamente em segundos.</p>
+                <div class="animated-card-arrow">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <i class="fa-solid fa-arrow-down-long"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAGE 6: KIOSK SUCCESS (TICKET PRINT) -->
+    <div class="kiosk-stage" id="stage-kiosk-success" style="display: none;">
+        <div class="success-ticket-container">
+            <div class="success-ticket-header">
+                <div class="ticket-success-icon">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2>Pedido Realizado!</h2>
+                <p>Retire sua senha abaixo e aguarde sua chamada.</p>
+            </div>
+            
+            <!-- Virtual Ticket Printed -->
+            <div class="virtual-ticket">
+                <div class="ticket-saw"></div>
+                <div class="ticket-body">
+                    <div class="ticket-restaurant">RESTAURANTE TECH</div>
+                    <div class="ticket-info-line">
+                        <span id="ticket-date-time">23/06/2026 12:00</span>
+                        <span id="ticket-type">VIAGEM</span>
+                    </div>
+                    <hr class="ticket-dash">
+                    <div class="ticket-label">SENHA DE CHAMADA</div>
+                    <div class="ticket-number" id="ticket-queue-number">034</div>
+                    <hr class="ticket-dash">
+                    <div class="ticket-items-list" id="ticket-items-summary">
+                        <!-- Printed items -->
+                    </div>
+                    <hr class="ticket-dash">
+                    <div class="ticket-total-price" id="ticket-total-value">Total: R$ 0,00</div>
+                    <div class="ticket-footer">Obrigado pela preferência!</div>
+                </div>
+                <div class="ticket-saw bottom"></div>
+            </div>
+            
+            <p class="auto-return-msg">Esta tela retornará ao início automaticamente em <span id="auto-return-timer">6</span> segundos...</p>
+        </div>
+    </div>
+
+</body>
+</html>

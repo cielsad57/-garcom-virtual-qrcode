@@ -1,0 +1,26 @@
+# Ambiente Virtual (Venv)
+venv/
+.venv/
+env/
+ENV/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Banco de dados local SQLite
+*.db
+restaurante.db
+restaurante.db-journal
+
+# Pastas de build do PyInstaller
+build/
+dist/
+*.spec
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini

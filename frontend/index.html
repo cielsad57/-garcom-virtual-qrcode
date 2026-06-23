@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal Central do Restaurante Inteligente - Acesse a Cozinha, Totem, Cliente e documentação da API.">
+    <title>Restaurante Tech - Portal Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #ff4757;
+            --primary-glow: rgba(255, 71, 87, 0.35);
+            --secondary: #2ed573;
+            --secondary-glow: rgba(46, 213, 115, 0.35);
+            --accent: #1e90ff;
+            --accent-glow: rgba(30, 144, 255, 0.35);
+            --neutral: #ffa502;
+            --neutral-glow: rgba(255, 165, 2, 0.35);
+            --admin: #a55eea;
+            --admin-glow: rgba(165, 94, 234, 0.35);
+            --pdv: #ff9f43;
+            --pdv-glow: rgba(255, 159, 67, 0.35);
+            --qrcodes: #10ac84;
+            --qrcodes-glow: rgba(16, 172, 132, 0.35);
+            --text-main: #f1f2f6;
+            --text-muted: #a4b0be;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 71, 87, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(30, 144, 255, 0.08) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        header {
+            margin-bottom: 50px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* Specific card glow themes */
+        .card-client:hover {
+            box-shadow: 0 15px 30px var(--primary-glow);
+            border-color: var(--primary);
+        }
+        .card-totem:hover {
+            box-shadow: 0 15px 30px var(--accent-glow);
+            border-color: var(--accent);
+        }
+        .card-kitchen:hover {
+            box-shadow: 0 15px 30px var(--secondary-glow);
+            border-color: var(--secondary);
+        }
+        .card-docs:hover {
+            box-shadow: 0 15px 30px var(--neutral-glow);
+            border-color: var(--neutral);
+        }
+        .card-admin:hover {
+            box-shadow: 0 15px 30px var(--admin-glow);
+            border-color: var(--admin);
+        }
+        .card-pdv:hover {
+            box-shadow: 0 15px 30px var(--pdv-glow);
+            border-color: var(--pdv);
+        }
+        .card-qrcodes:hover {
+            box-shadow: 0 15px 30px var(--qrcodes-glow);
+            border-color: var(--qrcodes);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .card-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-client .card-badge { color: var(--primary); background: rgba(255, 71, 87, 0.1); }
+        .card-totem .card-badge { color: var(--accent); background: rgba(30, 144, 255, 0.1); }
+        .card-kitchen .card-badge { color: var(--secondary); background: rgba(46, 213, 115, 0.1); }
+        .card-docs .card-badge { color: var(--neutral); background: rgba(255, 165, 2, 0.1); }
+        .card-admin .card-badge { color: var(--admin); background: rgba(165, 94, 234, 0.1); }
+        .card-pdv .card-badge { color: var(--pdv); background: rgba(255, 159, 67, 0.1); }
+        .card-qrcodes .card-badge { color: var(--qrcodes); background: rgba(16, 172, 132, 0.1); }
+
+        footer {
+            margin-top: 40px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="main-title">Restaurante Tech Hub</h1>
+            <p>Escolha a interface para interagir com o ecossistema integrado em tempo real.</p>
+        </header>
+
+        <main class="grid">
+            <!-- CLIENT CARD -->
+            <a href="/client/index.html?mesa=5" class="card card-client" id="btn-client-hub">
+                <div>
+                    <span class="card-icon">📱</span>
+                    <h2 class="card-title">Mesa do Cliente</h2>
+                    <p class="card-description">Interface mobile-first simulada para o cliente escanear o QR Code da Mesa 5, fazer pedidos e acompanhar a produção sem garçom.</p>
+                </div>
+                <span class="card-badge">Cliente (Mesa 5)</span>
+            </a>
+
+            <!-- TOTEM CARD -->
+            <a href="/totem/index.html" class="card card-totem" id="btn-totem-hub">
+                <div>
+                    <span class="card-icon">🖥️</span>
+                    <h2 class="card-title">Totem Autoatendimento</h2>
+                    <p class="card-description">Painel de terminal de entrada do restaurante. Faça pedidos rápidos do tipo viagem (Takeaway) ou check-in prévio de mesa.</p>
+                </div>
+                <span class="card-badge">Kiosk / Entrada</span>
+            </a>
+
+            <!-- KITCHEN CARD -->
+            <a href="/kitchen/index.html" class="card card-kitchen" id="btn-kitchen-hub">
+                <div>
+                    <span class="card-icon">🍳</span>
+                    <h2 class="card-title">Painel da Cozinha</h2>
+                    <p class="card-description">Mural Kanban para os chefs. Receba notificações sonoras e visuais instantâneas de novos pedidos e altere o status em tempo real.</p>
+                </div>
+                <span class="card-badge">Cozinha (Real-Time)</span>
+            </a>
+
+            <!-- PDV / CAIXA CARD -->
+            <a href="http://localhost:5173" class="card card-pdv" id="btn-pdv-hub" target="_blank">
+                <div>
+                    <span class="card-icon">💰</span>
+                    <h2 class="card-title">PDV & Frente de Caixa</h2>
+                    <p class="card-description">Interface moderna para vendas rápidas, controle de estoque integrado, registro de ponto de funcionários e fechamento de caixa.</p>
+                </div>
+                <span class="card-badge">PDV / Caixa (React)</span>
+            </a>
+
+            <!-- QRCODES CARD -->
+            <a href="/qrcodes/index.html" class="card card-qrcodes" id="btn-qrcodes-hub">
+                <div>
+                    <span class="card-icon">🖨️</span>
+                    <h2 class="card-title">QR Codes das Mesas</h2>
+                    <p class="card-description">Módulo de mesas. Visualize, imprima e distribua os QR Codes nas mesas para os clientes fazerem pedidos pelo celular.</p>
+                </div>
+                <span class="card-badge">Mesas / Impressão</span>
+            </a>
+
+            <!-- SWAGGER API DOCS CARD -->
+            <a href="/docs" class="card card-docs" id="btn-docs-hub">
+                <div>
+                    <span class="card-icon">🔌</span>
+                    <h2 class="card-title">API Swagger Docs</h2>
+                    <p class="card-description">Documentação interativa das rotas FastAPI. Envie payloads e teste as regras de negócio e validações diretamente pelo navegador.</p>
+                </div>
+                <span class="card-badge">Swagger / FastAPI</span>
+            </a>
+
+            <!-- ADMIN PANEL CARD -->
+            <a href="/admin/index.html" class="card card-admin" id="btn-admin-hub">
+                <div>
+                    <span class="card-icon">⚙️</span>
+                    <h2 class="card-title">Painel Administrativo</h2>
+                    <p class="card-description">Central de gerenciamento do restaurante. Controle o cardápio, visualize estatísticas do dia e monitore a ocupação das mesas.</p>
+                </div>
+                <span class="card-badge">Admin / Gestão</span>
+            </a>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Restaurante Inteligente Tech. Desenvolvido com Python, FastAPI e Vanilla Web Stack.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

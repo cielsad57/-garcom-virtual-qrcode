@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cardápio Digital Inteligente - Faça seu pedido diretamente pelo celular de forma rápida e prática.">
+    <title>Restaurante Tech - Faça seu Pedido</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <!-- QRCode JS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+
+    <!-- STICKY HEADER -->
+    <header class="app-header">
+        <div class="header-logo">
+            <span class="logo-emoji">🍔</span>
+            <div class="logo-text">
+                <h2>Restaurante Tech</h2>
+                <span class="logo-subtitle">Cardápio Digital</span>
+            </div>
+        </div>
+        <div class="header-right" style="display: flex; align-items: center; gap: 10px;">
+            <button class="btn-minha-mesa" id="btn-open-mesa" title="Visualizar mesa e conta">
+                <i class="fa-solid fa-bell-concierge"></i> Minha Mesa
+            </button>
+            <div class="table-badge" id="table-number-display">
+                <span>Mesa --</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="app-container">
+        
+        <!-- CATEGORY CAROUSEL (Horizontal Scroll) -->
+        <nav class="categories-nav" aria-label="Categorias de produtos">
+            <div class="categories-wrapper" id="categories-list">
+                <button class="category-btn active" data-category="Todos" id="cat-todos">
+                    <span class="cat-icon">🍽️</span> Todos
+                </button>
+                <button class="category-btn" data-category="Burgers" id="cat-burgers">
+                    <span class="cat-icon">🍔</span> Burgers
+                </button>
+                <button class="category-btn" data-category="Acompanhamentos" id="cat-acompanhamentos">
+                    <span class="cat-icon">🍟</span> Porções
+                </button>
+                <button class="category-btn" data-category="Bebidas" id="cat-bebidas">
+                    <span class="cat-icon">🥤</span> Bebidas
+                </button>
+                <button class="category-btn" data-category="Sobremesas" id="cat-sobremesas">
+                    <span class="cat-icon">🍰</span> Sobremesas
+                </button>
+            </div>
+        </nav>
+
+        <!-- PRODUCT GRID -->
+        <section class="products-section">
+            <h1 class="section-title" id="current-category-title">Todos os Itens</h1>
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be dynamically populated here -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Carregando cardápio...
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- FLOATING CART BUTTON -->
+    <div class="floating-cart-bar" id="floating-cart-bar" style="display: none;">
+        <button class="cart-trigger-btn" id="btn-open-cart">
+            <span class="cart-icon-wrapper">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span class="cart-count-badge" id="cart-badge-count">0</span>
+            </span>
+            <span class="cart-btn-label">Ver Sacola</span>
+            <span class="cart-total-price" id="cart-badge-total">R$ 0,00</span>
+        </button>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div class="modal-overlay" id="product-detail-modal" style="display: none;">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="btn-close-detail" aria-label="Fechar Modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="modal-image-header" id="modal-product-emoji">
+                🍔
+            </div>
+            
+            <div class="modal-content">
+                <h2 class="modal-product-title" id="modal-product-title">Nome do Hamburguer</h2>
+                <p class="modal-product-desc" id="modal-product-desc">Descrição completa do item delicioso.</p>
+                <span class="modal-product-price" id="modal-product-price">R$ 0,00</span>
+                
+                <hr class="modal-divider">
+                
+                <!-- Custom notes -->
+                <div class="custom-notes-group">
+                    <label for="input-product-notes" class="notes-label">
+                        <i class="fa-regular fa-comment-dots"></i> Observações adicionais:
+                    </label>
+                    <textarea id="input-product-notes" placeholder="Ex: Sem cebola, molho à parte, ponto da carne..." maxlength="150"></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div class="quantity-selector">
+                    <button class="qty-btn" id="btn-qty-minus" aria-label="Diminuir quantidade">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span class="qty-number" id="modal-qty-display">1</span>
+                    <button class="qty-btn" id="btn-qty-plus" aria-label="Aumentar quantidade">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+                <button class="add-to-cart-action-btn" id="btn-add-to-cart-submit">
+                    Adicionar <span id="modal-add-total-price">R$ 0,00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="drawer-overlay" id="cart-drawer" style="display: none;">
+        <div class="drawer-container">
+            <header class="drawer-header">
+                <h3>Sua Sacola</h3>
+                <button class="drawer-close-btn" id="btn-close-cart" aria-label="Fechar Sacola">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </header>
+            
+            <div class="drawer-scroll-content">
+                <div class="cart-items-list" id="cart-items-list">
+                    <!-- Cart items will be loaded here -->
+                </div>
+            </div>
+            
+            <footer class="drawer-footer">
+                <div class="cart-summary-line">
+                    <span>Subtotal</span>
+                    <strong id="cart-summary-subtotal">R$ 0,00</strong>
+                </div>
+                <div class="cart-summary-line delivery-line" id="delivery-cost-line" style="display: none;">
+                    <span>Taxa de Viagem</span>
+                    <strong>Grátis</strong>
+                </div>
+                <div class="cart-summary-line total-line">
+                    <span>Total</span>
+                    <strong id="cart-summary-total">R$ 0,00</strong>
+                </div>
+                
+                <button class="checkout-btn" id="btn-submit-order">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Pedido para a Cozinha
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- ORDER TRACKING STATE (Overlay/View) -->
+    <div class="tracking-overlay" id="order-tracking-screen" style="display: none;">
+        <div class="tracking-container">
+            <div class="tracking-header-status">
+                <div class="success-icon-check">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2>Pedido Enviado!</h2>
+                <p>Seu pedido já está registrado no sistema e a cozinha foi notificada.</p>
+                <span class="tracking-order-id" id="tracking-order-id">Pedido #--</span>
+            </div>
+            
+            <div class="tracking-progress-board">
+                <h4 class="progress-title">Acompanhe o Status</h4>
+                
+                <div class="stepper-vertical">
+                    <!-- Step 1 -->
+                    <div class="step-item" id="step-pendente">
+                        <div class="step-icon"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="step-details">
+                            <h3>Recebido</h3>
+                            <p>Aguardando confirmação na cozinha.</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="step-item" id="step-preparo">
+                        <div class="step-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                        <div class="step-details">
+                            <h3>Em Preparo</h3>
+                            <p>Seus pratos estão sendo cozinhados com carinho.</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="step-item" id="step-pronto">
+                        <div class="step-icon"><i class="fa-solid fa-bell"></i></div>
+                        <div class="step-details">
+                            <h3>Pronto</h3>
+                            <p>O pedido está pronto! Será servido em instantes.</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="step-item" id="step-entregue">
+                        <div class="step-icon"><i class="fa-solid fa-hand-holding-plate"></i></div>
+                        <div class="step-details">
+                            <h3>Entregue</h3>
+                            <p>Esperamos que aproveite sua refeição!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tracking-footer">
+                <button class="new-order-btn" id="btn-back-to-menu">
+                    <i class="fa-solid fa-chevron-left"></i> Fazer outro Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR/WARNING BAR -->
+    <div id="toast-notification" class="toast" style="display: none;"></div>
+
+    <!-- MINHA MESA MODAL (DRAWER SHEET) -->
+    <div class="drawer-overlay" id="mesa-drawer" style="display: none;">
+        <div class="drawer-container">
+            <header class="drawer-header">
+                <h3><i class="fa-solid fa-chair"></i> Minha Mesa <span id="mesa-drawer-number">--</span></h3>
+                <button class="drawer-close-btn" id="btn-close-mesa" aria-label="Fechar Painel">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </header>
+            
+            <div class="drawer-scroll-content">
+                <!-- Action Cards Row -->
+                <div class="mesa-quick-actions">
+                    <button class="mesa-action-card" id="btn-call-garcom">
+                        <div class="action-icon"><i class="fa-solid fa-bell"></i></div>
+                        <span>Chamar Garçom</span>
+                    </button>
+                    <button class="mesa-action-card secondary" id="btn-request-conta">
+                        <div class="action-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <span>Pedir a Conta</span>
+                    </button>
+                </div>
+
+                <div class="mesa-section-title">
+                    <h4><i class="fa-solid fa-receipt"></i> Itens Consumidos</h4>
+                </div>
+
+                <div class="consumed-items-list" id="consumed-items-list">
+                    <!-- Loaded dynamically via JS -->
+                    <p class="empty-mesa-msg">Nenhum item consumido nesta mesa ainda.</p>
+                </div>
+
+                <!-- Payment Area (Initially hidden) -->
+                <div class="payment-area" id="payment-area" style="display: none;">
+                    <div class="mesa-section-title">
+                        <h4><i class="fa-solid fa-qrcode"></i> Pagamento via Pix</h4>
+                    </div>
+                    <div class="pix-instructions">
+                        <p>Escaneie o QR Code ou copie o código Pix abaixo para realizar o pagamento.</p>
+                    </div>
+                    <div class="pix-qrcode-container">
+                        <div class="pix-qrcode-wrapper" id="pix-qrcode-canvas"></div>
+                    </div>
+                    <div class="pix-copiacola-wrapper">
+                        <input type="text" id="pix-copiacola-input" readonly value="">
+                        <button class="btn-copy-pix" id="btn-copy-pix" title="Copiar código Pix">
+                            <i class="fa-regular fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <div class="payment-status-badge">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>Aguardando confirmação do garçom...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="drawer-footer" id="mesa-drawer-footer">
+                <div class="cart-summary-line">
+                    <span>Subtotal Consumido</span>
+                    <strong id="mesa-summary-subtotal">R$ 0,00</strong>
+                </div>
+                <div class="cart-summary-line">
+                    <span>Taxa de Serviço (10%)</span>
+                    <strong id="mesa-summary-tax">R$ 0,00</strong>
+                </div>
+                <div class="cart-summary-line total-line">
+                    <span>Total da Conta</span>
+                    <strong id="mesa-summary-total">R$ 0,00</strong>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- PAYMENT SUCCESS SCREEN OVERLAY -->
+    <div class="tracking-overlay" id="payment-success-screen" style="display: none;">
+        <div class="tracking-container" style="justify-content: center; align-items: center;">
+            <div class="tracking-header-status">
+                <div class="success-icon-check" style="color: var(--success); font-size: 5rem;">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2 style="font-size: 2.2rem; margin-bottom: 12px;">Pagamento Confirmado!</h2>
+                <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 320px; margin: 0 auto 30px;">
+                    Sua conta foi encerrada com sucesso. Muito obrigado pela preferência e volte sempre!
+                </p>
+            </div>
+            <button class="new-order-btn" id="btn-finish-payment-flow" style="background: var(--success); box-shadow: 0 4px 15px var(--success-glow); width: 220px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-check"></i> Concluir
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
